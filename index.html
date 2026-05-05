@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Consulta de Asistencia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <!-- ============================================================
        ESTILOS CSS
   ============================================================ -->
@@ -33,15 +32,15 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, var(--bg-start), var(--bg-mid), var(--bg-end));
       background-attachment: fixed;
       color: var(--text-main);
-      padding: 1.5rem;
+      padding: clamp(1rem, 4vw, 1.5rem);
       overflow-x: hidden;
     }
 
@@ -118,7 +117,7 @@
 
     h1 {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(1.6rem, 5vw, 2rem);
+      font-size: clamp(1.4rem, 6vw, 1.9rem);
       font-weight: 800;
       line-height: 1.15;
       margin-bottom: 0.5rem;
@@ -244,7 +243,7 @@
     /* Grid de stats */
     .stats-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
       gap: 0.9rem;
       margin-bottom: 1rem;
     }
