@@ -372,7 +372,7 @@
     /* -------------------------------------------------------
        CONSTANTE DE API — Cambia solo esta URL cuando estés listo
     ------------------------------------------------------- */
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwDVy0e6Fbdyqcm0hnKaIMH-iHtejW7Hd3f_7Eutybh_tV5Bkn0bDBihBjrVdo0vnps/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbz-aBtVIWIgTS7f5LfXnxSEFk2iGleoAtvU9K95eVRrY5FR1fOdWMMtgPj7h-6baPaU/exec';
 
     /* -------------------------------------------------------
        Referencias al DOM
@@ -443,11 +443,36 @@ function renderResult(data) {
   const badgeClass = getBadgeClass(data.estado);
   const icon       = getBadgeIcon(badgeClass);
 
+  // 👇 Procesar menciones si existen
+  const mencionesHTML = data.menciones
+    ? `
+      <div class="stat-box" style="grid-column: 1 / -1;">
+        <div class="stat-label">Menciones inscritas</div>
+        <div style="margin-top:8px;">
+          ${data.menciones.split(",").map(m => `
+            <span style="
+              display:inline-block;
+              background: rgba(167,139,250,0.15);
+              color: var(--accent);
+              padding:6px 12px;
+              border-radius:20px;
+              font-size:0.75rem;
+              font-weight:600;
+              margin:4px 4px 0 0;
+              border:1px solid rgba(167,139,250,0.3);
+            ">
+              ${m.trim()}
+            </span>
+          `).join("")}
+        </div>
+      </div>
+    `
+    : "";
+
   showResultado(`
     <hr class="divider" />
 
     <div class="stats-grid">
-      <!-- Nombre completo -->
       <div class="stat-box" style="grid-column: 1 / -1;">
         <div class="stat-label">Estudiante</div>
         <div class="stat-value">
@@ -469,6 +494,9 @@ function renderResult(data) {
         <div class="stat-label">Clases asistidas</div>
         <div class="stat-value">${data.total}</div>
       </div>
+
+      ${mencionesHTML}
+
     </div>
 
     <div class="estado-badge ${badgeClass}" role="status">
@@ -477,7 +505,6 @@ function renderResult(data) {
     </div>
   `);
 }
-
     /* -------------------------------------------------------
        Renderiza un error (RU no encontrado u otro)
     ------------------------------------------------------- */
