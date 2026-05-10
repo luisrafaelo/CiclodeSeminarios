@@ -372,7 +372,7 @@
     /* -------------------------------------------------------
        CONSTANTE DE API — Cambia solo esta URL cuando estés listo
     ------------------------------------------------------- */
-    const API_URL = 'https://script.google.com/macros/s/AKfycbz-aBtVIWIgTS7f5LfXnxSEFk2iGleoAtvU9K95eVRrY5FR1fOdWMMtgPj7h-6baPaU/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyHcO40BCSFJOW24Kq3mVs4dAVBc9esSM6dpBHiP0UWlNBKFQXs4tIhz0U5OtVlcssb/exec';
 
     /* -------------------------------------------------------
        Referencias al DOM
@@ -469,42 +469,110 @@ function renderResult(data) {
     `
     : "";
 
-  showResultado(`
-    <hr class="divider" />
+showResultado(`
 
-    <div class="stats-grid">
-      <div class="stat-box" style="grid-column: 1 / -1;">
-        <div class="stat-label">Estudiante</div>
-        <div class="stat-value">
-          ${data.nombre} ${data.apellido}
-        </div>
+  <hr class="divider" />
+
+  <div class="stats-grid">
+
+    <div class="stat-box" style="grid-column: 1 / -1;">
+      <div class="stat-label">Estudiante</div>
+      <div class="stat-value">
+        ${data.nombre} ${data.apellido}
       </div>
-
-      <div class="stat-box">
-        <div class="stat-label">RU</div>
-        <div class="stat-value">${data.ru}</div>
-      </div>
-
-      <div class="stat-box">
-        <div class="stat-label">Asistencia</div>
-        <div class="stat-value">${data.porcentaje}</div>
-      </div>
-
-      <div class="stat-box" style="grid-column: 1 / -1;">
-        <div class="stat-label">Clases asistidas</div>
-        <div class="stat-value">${data.total}</div>
-      </div>
-
-      ${mencionesHTML}
-
     </div>
 
-    <div class="estado-badge ${badgeClass}" role="status">
-      <span aria-hidden="true">${icon}</span>
-      ${data.estado}
+    <div class="stat-box">
+      <div class="stat-label">RU</div>
+      <div class="stat-value">${data.ru}</div>
     </div>
-  `);
+
+    <div class="stat-box">
+      <div class="stat-label">Asistencia</div>
+      <div class="stat-value">${data.porcentaje}</div>
+    </div>
+
+    <div class="stat-box" style="grid-column: 1 / -1;">
+      <div class="stat-label">Clases asistidas</div>
+      <div class="stat-value">${data.total}</div>
+    </div>
+
+    ${mencionesHTML}
+
+  </div>
+
+  <div class="estado-badge ${badgeClass}" role="status">
+    <span aria-hidden="true">${icon}</span>
+    ${data.estado}
+  </div>
+
+  <div style="margin-top:25px; text-align:center;">
+
+<p style="
+  font-size:0.78rem;
+  color:var(--text-muted);
+  margin-bottom:12px;
+  line-height:1.6;
+  background: rgba(167,139,250,0.08);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius:10px;
+  padding: 10px 14px;
+  text-align:left;
+">
+  ⚠️ <strong style="color:var(--accent);">Atención:</strong>
+  Al presionar el botón confirmas que tus datos,
+  <strong style="color:var(--text-main);">asistencias y menciones</strong>
+  registradas son correctas y no tendrás reclamo alguno.
+</p>
+
+<button id="btn-aceptar" style="
+  width:100%;
+  padding:0.9rem;
+  font-family:'Syne', sans-serif;
+  font-size:0.9rem;
+  font-weight:700;
+  letter-spacing:0.05em;
+  color:#fff;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  box-shadow:0 4px 18px rgba(34,197,94,0.4);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  transition: opacity 0.3s;
+">
+  <div id="spinner-aceptar" style="
+    display:none;
+    width:16px; height:16px;
+    border:2px solid rgba(255,255,255,0.3);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink:0;
+  "></div>
+  <span id="texto-aceptar">CONFIRMAR DATOS</span>
+</button>
+
+  </div>
+
+`);
+setTimeout(() => {
+  const btn = document.getElementById("btn-aceptar");
+  if (btn) {
+    btn.addEventListener("click", aceptarDatos);
+  if (data.aceptado) {
+    btn.disabled = true;
+    btn.style.background = "#15803d";
+    btn.style.cursor = "default";
+    document.getElementById("texto-aceptar").textContent = "DATOS YA CONFIRMADOS ✓";
+  } 
+  }
+}, 100);
 }
+
     /* -------------------------------------------------------
        Renderiza un error (RU no encontrado u otro)
     ------------------------------------------------------- */
@@ -556,8 +624,49 @@ function renderResult(data) {
     /* -------------------------------------------------------
        Eventos
     ------------------------------------------------------- */
+/* -------------------------------------------------------
+   Función: aceptar datos y escribir en columna AL
+------------------------------------------------------- */
+async function aceptarDatos() {
+  const ru = inputRU.value.trim();
+  const btn = document.getElementById("btn-aceptar");
+  const spinnerAceptar = document.getElementById("spinner-aceptar");
+  const textoAceptar   = document.getElementById("texto-aceptar");
 
-    /* Clic en "Consultar" */
+  // Mostrar spinner
+  btn.disabled = true;
+  btn.style.opacity = "0.8";
+  spinnerAceptar.style.display = "block";
+  textoAceptar.textContent = "Registrando...";
+
+  try {
+    const response = await fetch(`${API_URL}?ru=${encodeURIComponent(ru)}&accion=aceptar`);
+    const data = await response.json();
+
+    if (data.success) {
+      spinnerAceptar.style.display = "none";
+      textoAceptar.textContent = "DATOS CONFIRMADOS ✓";
+      btn.style.background = "#15803d";
+      btn.style.opacity = "1";
+      btn.style.cursor = "default";
+    } else {
+      // Si falla, restaurar botón
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      spinnerAceptar.style.display = "none";
+      textoAceptar.textContent = "CONFIRMAR DATOS";
+      alert("Error al registrar: " + (data.error || "desconocido"));
+    }
+
+  } catch (err) {
+    btn.disabled = false;
+    btn.style.opacity = "1";
+    spinnerAceptar.style.display = "none";
+    textoAceptar.textContent = "CONFIRMAR DATOS";
+    alert("No se pudo registrar la aceptación.");
+  }
+}
+/* Clic en "Consultar" */
     btnConsult.addEventListener('click', consultarAsistencia);
 
     /* Permitir Enter desde el input */
