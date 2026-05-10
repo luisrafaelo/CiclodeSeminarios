@@ -372,7 +372,7 @@
     /* -------------------------------------------------------
        CONSTANTE DE API — Cambia solo esta URL cuando estés listo
     ------------------------------------------------------- */
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzYZ1wiLhx9wqBD2NDf_zDvA0l-eXASz3om3u5qf0GoreFpPsh5qBqnra7Onox7jxPh/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwDVy0e6Fbdyqcm0hnKaIMH-iHtejW7Hd3f_7Eutybh_tV5Bkn0bDBihBjrVdo0vnps/exec';
 
     /* -------------------------------------------------------
        Referencias al DOM
@@ -439,32 +439,44 @@
     /* -------------------------------------------------------
        Renderiza el resultado exitoso
     ------------------------------------------------------- */
-    function renderResult(data) {
-      const badgeClass = getBadgeClass(data.estado);
-      const icon       = getBadgeIcon(badgeClass);
+function renderResult(data) {
+  const badgeClass = getBadgeClass(data.estado);
+  const icon       = getBadgeIcon(badgeClass);
 
-      showResultado(`
-        <hr class="divider" />
-        <div class="stats-grid">
-          <div class="stat-box">
-            <div class="stat-label">RU</div>
-            <div class="stat-value">${data.ru}</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-label">Asistencia</div>
-            <div class="stat-value">${data.porcentaje}</div>
-          </div>
-          <div class="stat-box" style="grid-column: 1 / -1;">
-            <div class="stat-label">Clases asistidas</div>
-            <div class="stat-value">${data.total}</div>
-          </div>
+  showResultado(`
+    <hr class="divider" />
+
+    <div class="stats-grid">
+      <!-- Nombre completo -->
+      <div class="stat-box" style="grid-column: 1 / -1;">
+        <div class="stat-label">Estudiante</div>
+        <div class="stat-value">
+          ${data.nombre} ${data.apellido}
         </div>
-        <div class="estado-badge ${badgeClass}" role="status">
-          <span aria-hidden="true">${icon}</span>
-          ${data.estado}
-        </div>
-      `);
-    }
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">RU</div>
+        <div class="stat-value">${data.ru}</div>
+      </div>
+
+      <div class="stat-box">
+        <div class="stat-label">Asistencia</div>
+        <div class="stat-value">${data.porcentaje}</div>
+      </div>
+
+      <div class="stat-box" style="grid-column: 1 / -1;">
+        <div class="stat-label">Clases asistidas</div>
+        <div class="stat-value">${data.total}</div>
+      </div>
+    </div>
+
+    <div class="estado-badge ${badgeClass}" role="status">
+      <span aria-hidden="true">${icon}</span>
+      ${data.estado}
+    </div>
+  `);
+}
 
     /* -------------------------------------------------------
        Renderiza un error (RU no encontrado u otro)
