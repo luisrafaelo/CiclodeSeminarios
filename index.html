@@ -372,7 +372,7 @@
     /* -------------------------------------------------------
        CONSTANTE DE API — Cambia solo esta URL cuando estés listo
     ------------------------------------------------------- */
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyHcO40BCSFJOW24Kq3mVs4dAVBc9esSM6dpBHiP0UWlNBKFQXs4tIhz0U5OtVlcssb/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwO9zyLV07M5Xp72sXR0BdpSSn60i5HZvUGYqr2RRO6H9l5se9K7Vu_ATLOLgVJp3cEvw/exec';
 
     /* -------------------------------------------------------
        Referencias al DOM
@@ -468,7 +468,26 @@ function renderResult(data) {
       </div>
     `
     : "";
-
+const certOk = data.certificado === 'RECOGIDO';
+const tablaCert = `
+  <div class="stat-box" style="grid-column: 1 / -1; padding:0; overflow:hidden;">
+    <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+      <thead>
+        <tr style="background:rgba(167,139,250,0.12);">
+          <th style="padding:10px; text-align:left; color:var(--text-muted);">Certificado</th>
+          <th style="padding:10px; text-align:center; color:var(--text-muted);">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:12px 10px;">${data.estado}</td>
+          <td style="padding:12px 10px; text-align:center; font-weight:700; color:${certOk ? 'var(--success)' : 'var(--warning)'};">
+            ${certOk ? '✓ RECOGIDO' : '⏳ PENDIENTE'}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>`;
 showResultado(`
 
   <hr class="divider" />
@@ -498,7 +517,7 @@ showResultado(`
     </div>
 
     ${mencionesHTML}
-
+    ${tablaCert}
   </div>
 
   <div class="estado-badge ${badgeClass}" role="status">
